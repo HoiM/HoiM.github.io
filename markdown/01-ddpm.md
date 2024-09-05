@@ -45,7 +45,7 @@ $$
 
 严谨的推导也可以通过 VAE 的 Evidence Lower Bound 推出，其中隐变量 $z$ 在这里变成了 $x_1,x_2,…,x_T$ 的联合分布，我们要求的是 $x_0$。感兴趣可参考[这篇论文](https://arxiv.org/abs/2208.11970)。
 
-![ddpm-algo.png](https://github.com/HoiM/HoiM.github.io/assets/ddpm-algo.png)
+![ddpm-algo.png](https://github.com/HoiM/HoiM.github.io/blob/main/assets/ddpm-algo.png?raw=true)
 
 ### 采样
 
