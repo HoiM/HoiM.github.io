@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
+            background-color: #51e2f5;
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -16,14 +16,14 @@
             align-items: center;
         }
         .container {
-            background-color: white;
+            background-color: rgba(146, 168, 209, 0.8);
             padding: 40px;
-            width: 80%;
-            max-width: 600px;
+            width: 100%;
+            max-width: 800px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             box-sizing: border-box;
-            text-align: center;
+            text-align: left;
         }
         h1 {
             margin: 0;
@@ -58,9 +58,9 @@
 <body>
     <div class="container">
         <h1>扩散模型 最小化实现</h1>
-        <p>这里是我的扩散模型学习记录。<br>
-           我使用最小化的代码实现，复现了扩散模型中各种加噪去噪算法，同时也在这里记录下代码实现所需的必要数学结论。<br>
-           GitHub 项目在<a href="https://github.com/HoiM/diffusion-schedulers-minimal-implementation" target="_blank">这里</a>
+        <p>这里是我的扩散模型学习记录，包含代码实现和必要数学结论。<br><br>
+           我使用最小化的代码实现，复现了扩散模型多种加噪去噪算法，也在这里记录各算法必要的数学结论。<br><br>
+           欢迎运行我的GitHub项目，查看代码请点击<a href="https://github.com/HoiM/diffusion-schedulers-minimal-implementation" target="_blank">此处</a>
         </p>
         <ul>
             <li><a href="html/00-prerequisites-on-statistics.html">00-统计学基础</a></li>
