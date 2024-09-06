@@ -1,6 +1,6 @@
 # DDIM
 
-DDPM 问世后，还存在一个问题，就是采样需要的时间步太长了。在论文中，作者提出使用 1000 步去采样生成。在[我的实现](https://github.com/HoiM/diffusion-schedulers-minimal-implementation/tree/master/01-DDPM)中，用 MNIST 训练生成手写数字，也需要 250 步。这一特性严重增加了模型推理时间。而 DDIM 则旨在解决这一问题：我们不用推理完整的 1000 步或 250 步，我们其实可以跳跃地采样。
+DDPM 问世后，还存在一个问题，就是采样需要的时间步太长了。在论文中，作者提出使用 1000 步去采样生成。在[我的 DDPM 实现](https://github.com/HoiM/diffusion-schedulers-minimal-implementation/tree/master/01-DDPM)中，用 MNIST 训练生成手写数字，也需要 250 步。这一特性严重增加了模型推理时间。而 DDIM 则旨在解决这一问题：我们不用推理完整的 1000 步或 250 步，我们其实可以跳跃地采样。
 
 ### 核心原理
 
@@ -30,4 +30,30 @@ $$
 $$
 
 把这两个式子带入上面 $q_{\sigma}(x_{t-1}|x_t, x_0) $ 服从的高斯分布，就可以得到：
+$$
+x_{t-1} = \sqrt{\bar\alpha_{t - 1}} (\frac{x_t - \sqrt{1 - \bar\alpha_t} \epsilon_\theta(x_t, t)}{\sqrt{\bar\alpha_t}}) + \sqrt{1-\bar\alpha_{t-1}-\sigma_t^2}\epsilon_\theta(x_t, t) + \sigma_t\epsilon_t
+$$
+这就是 DDIM 去噪的核心公式了，其中 $\epsilon_\theta$ 是模型预测出来的噪声，$\epsilon_t$ 是标准高斯噪声，用来在采样过程中加入随机性 。但整个公式和跳步采样有什么关系？观察上面的推导过程，其实全程并为用到 DDPM 里马尔可夫公式，即 $x_{t} = \sqrt{1-\beta_{t-1}} x_{t-1} + \sqrt{\beta_{t-1}} \epsilon$ 这个公式始终没用到。那上面去噪公式里 $t$ 和 $t-1$ 其实并不一定是相邻的两步（比如第 249 步和第 248 步），它仅仅代表一种时间步的先后关系（比如第 249 步和第 229 步）。这样就实现了跳跃式的采样过程。
+
+还有一个问题，$\sigma_t$ 怎么得到？如果我们拿上面的公式，合并所有 $\epsilon_\theta$ 的项，与 DDPM 的去噪公式里 $\epsilon$ 的系数对比，就可以求解出来：
+$$
+\sigma_t = \sqrt{\frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}} \sqrt{1-\frac{\bar\alpha_t}{\bar\alpha_{t-1}}}
+$$
+当然这只是一种 $\sigma_t$ 的设计。如果按照这个式子，前向过程就成了马尔可夫过程，整个扩散模型就变成了 DDPM（如果你不跳步采样的话）。实际情况下，我们一般会 $\sigma_t \epsilon_t$ 这一项使用：
+$$
+\sigma_t = \eta \sqrt{\frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}} \sqrt{1-\frac{\bar\alpha_t}{\bar\alpha_{t-1}}}
+$$
+其中 $\eta$ 在 0 到 1 之间取值。当 $\eta$ 为 0 时，整个过程就成了确定性的采样，没有随机性。
+
+### 代码实现
+
+我在[这里](https://github.com/HoiM/diffusion-schedulers-minimal-implementation/tree/master/02-DDIM)实现了 DDIM 的采样代码，这里使用了我前面 DDPM 训练出来的模型和权重，采样 MNIST 样式的手写数字。这里我使用了 50 步采样，相比于我训练的 250 的 DDPM，推理时间可减少到五分之一。
+
+### 参考文献
+
+[Denoising Diffusion Implicit Models](https://arxiv.org/abs/2010.02502)
+
+
+
+
 
