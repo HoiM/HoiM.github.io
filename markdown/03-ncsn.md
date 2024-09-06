@@ -54,7 +54,13 @@ $$
 
 最终，NCSN 提出了一种叫作 annealed Langevin Dynamics 的采样算法来生成样本。具体步骤如下图：
 
+![annealed-langevin-dynamics.png](https://github.com/HoiM/HoiM.github.io/blob/main/assets/annealed-langevin-dynamics.png?raw=true)
 
+其中 $x_0$ 是我们随机采样的一个起点。然后 $\sigma$ 从大到小（因为一开始数据距离真实数据远，而大的 $\sigma$ 对应距离真实数据远的样本）进行采样。针对每一个 $\sigma$ 我们迭代 $T$ 次，这里就使用了 Langevin Dynamics 的公式。注意到算法中还有一个 $\epsilon$，这个数值和“梯度更新的步长”相关。
+
+### 代码实现
+
+在[这里](https://github.com/HoiM/diffusion-schedulers-minimal-implementation/tree/master/03-NCSN)我实现了简易的 NCSN 算法，数据集仍然用 MNIST，网络结构和前面 DDPM 一致。我发现训练 NCSN 需要的迭代次数显著更多，这里我用了 750 个 epoch 训练，效果才差不多。
 
 ### 参考文献
 
