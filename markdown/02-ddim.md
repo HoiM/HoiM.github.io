@@ -39,15 +39,17 @@ $$
 $$
 \sigma_t = \sqrt{\frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}} \sqrt{1-\frac{\bar\alpha_t}{\bar\alpha_{t-1}}}
 $$
-当然这只是一种 $\sigma_t$ 的设计。如果按照这个式子，前向过程就成了马尔可夫过程，整个扩散模型就变成了 DDPM（如果你不跳步采样的话）。实际情况下，我们一般会 $\sigma_t \epsilon_t$ 这一项使用：
+当然这只是一种 $\sigma_t$ 的设计。如果按照这个式子，前向过程就成了马尔可夫过程，整个扩散模型就变成了 DDPM（如果你不跳步采样的话）。实际情况下，我们一般会在 $\sigma_t \epsilon_t$ 这一项使用：
 $$
-\sigma_t = \eta \sqrt{\frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}} \sqrt{1-\frac{\bar\alpha_t}{\bar\alpha_{t-1}}}
+\sigma_t(\eta) = \eta \sqrt{\frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}} \sqrt{1-\frac{\bar\alpha_t}{\bar\alpha_{t-1}}}
 $$
 其中 $\eta$ 在 0 到 1 之间取值。当 $\eta$ 为 0 时，整个过程就成了确定性的采样，没有随机性。
 
 ### 代码实现
 
 我在[这里](https://github.com/HoiM/diffusion-schedulers-minimal-implementation/tree/master/02-DDIM)实现了 DDIM 的采样代码，这里使用了我前面 DDPM 训练出来的模型和权重，采样 MNIST 样式的手写数字。这里我使用了 50 步采样，相比于我训练的 250 的 DDPM，推理时间可减少到五分之一。
+
+在我的实现中，我首先通过跳步采样，跳到 $t=1$ 的地方。然后通过 $x_0$ 和 $x_t$ 的关系式（本文第四个公式），通过 $x_1$ 计算出 $x_0$，因为在 $t=1$ 时，$\bar\alpha_{t-1}$ 就不存在了。
 
 ### 参考文献
 
